@@ -1,6 +1,4 @@
 import json
-import discord
-from discord.ext import commands
 
 
 def get_token():
@@ -10,4 +8,10 @@ def get_token():
 
 
 def log_messages(message):
-    print('Message from {0.author}: {0.content}'.format(message))
+    print(F'Message from {message.author}: {message.content}')
+
+
+def read_names(file_name):
+    with open(file_name, encoding="utf-8") as file:
+        names = [line.rstrip() for line in file.readlines()]
+    return names

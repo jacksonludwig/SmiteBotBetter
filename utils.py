@@ -15,3 +15,8 @@ def read_names(file_name):
     with open(file_name, encoding="utf-8") as file:
         names = [line.rstrip() for line in file.readlines()]
     return names
+
+
+def make_singleton_tuples(names):
+    for i in range(len(names)):
+        names[i] = (names[i],)

@@ -53,9 +53,31 @@ def insert_gods(names):
         conn = MySQLConnection(**db_config)
 
         cursor = conn.cursor()
-        for name in names:
-            query = F"INSERT INTO god (god_name) VALUE ('{name}')"
-            cursor.execute(query)
+        query = "INSERT INTO god(god_name) VALUE(%s)"
+        cursor.executemany(query, names)
+
+        if cursor.lastrowid:
+            print('last insert id', cursor.lastrowid)
+        else:
+            print('last insert id not found')
+
+        conn.commit()
+    except Error as error:
+        print(error)
+
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def insert_items(names):
+    try:
+        db_config = read_db_config()
+        conn = MySQLConnection(**db_config)
+
+        cursor = conn.cursor()
+        query = "INSERT INTO item(item_name) VALUE(%s)"
+        cursor.executemany(query, names)
 
         if cursor.lastrowid:
             print('last insert id', cursor.lastrowid)
@@ -74,5 +96,8 @@ def insert_gods(names):
 if __name__ == '__main__':
     # connect()
     # query_with_fetchone()
-    names = utils.read_names("names.txt")
-    insert_gods(names)
+    # names = utils.read_names("names.txt")
+    names = utils.read_names("items.txt")
+    utils.make_singleton_tuples(names)
+    print(names)
+    insert_items(names)

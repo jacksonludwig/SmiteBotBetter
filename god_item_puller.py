@@ -66,4 +66,10 @@ def get_item_info():
     write_names_to_text("items.txt", item_names)
 
 
-get_item_info()
+'''
+def main():
+    get_item_info()
+    get_god_info()
+
+main()
+'''

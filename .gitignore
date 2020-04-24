@@ -130,3 +130,10 @@ dmypy.json
 
 #discord token
 token.json
+project_env/token.json
+
+.vscode/
+
+chromedriver.exe
+
+geckodriver.exe

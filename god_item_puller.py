@@ -31,7 +31,7 @@ def fake_browser_selenium(URL):
         executable_path=r"geckodriver.exe", firefox_profile=profile)
     driver.install_addon(adblock_file, temporary=True)
     driver.get(URL)
-    time.sleep(10)
+    time.sleep(5)
     return driver.page_source.encode("utf-8").strip()
 
 
@@ -75,11 +75,16 @@ def get_item_info():
 
 # This will have to go through siblings of the correct flex class
 # Needs finishing
-def get_core_build(names):
+def get_core_build(names, category):
     for name in names:
         search_name = name.lower()
+        print(f"Fetching from: {BASE_BUILD_URL}{search_name}")
         soup = get_soup_selenium(BASE_BUILD_URL + search_name)
-        print(BASE_BUILD_URL + search_name)
+        core_div = soup.find("div", string=category)
+        for sibling in core_div.next_siblings:
+            data = sibling.find("div", title=True)
+            print(data.text)
+        # only one god for now
         break
 
 
@@ -87,7 +92,8 @@ def main():
    # get_item_info()
    # get_god_info()
     list_of_names_from_db = db_connector.query_with_fetchall("god")
-    get_core_build(list_of_names_from_db)
+    categories = ["Core", "Offensive", "Defensive"]
+    get_core_build(list_of_names_from_db, categories[2])
 
 
 main()

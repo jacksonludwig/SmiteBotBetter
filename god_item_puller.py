@@ -2,9 +2,12 @@ from bs4 import BeautifulSoup
 import urllib.request
 from selenium import webdriver
 import time
+import db_connector
 
 GODS_URL = "https://www.smitegame.com/gods/"
 ITEMS_URL = "https://www.smitefire.com/smite/items"
+BASE_BUILD_URL = "https://smite.gg/stats/703/conquest/all/"
+ITEM_SECTION_CLASSES = "sc-fzoaKM hNuJKS"
 
 
 def fake_browser(URL):
@@ -66,10 +69,24 @@ def get_item_info():
     write_names_to_text("items.txt", item_names)
 
 
-'''
+# This will have to go through children of the correct flex class
+# Needs finishing
+def get_core_build(names):
+    for name in names:
+        soup = get_soup(BASE_BUILD_URL + name)
+        print(soup.find_all('div'))
+        for item in soup.findAll("div", {"class": ITEM_SECTION_CLASSES}):
+            print(item)
+            print("------")
+        break
+
+
 def main():
-    get_item_info()
-    get_god_info()
+   # get_item_info()
+   # get_god_info()
+
+    list_of_names_from_db = db_connector.query_with_fetchall("god")
+    get_core_build(list_of_names_from_db)
+
 
 main()
-'''

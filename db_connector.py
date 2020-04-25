@@ -123,3 +123,4 @@ if __name__ == '__main__':
     # print(names)
     # insert_items(names)
     names_list_from_db = query_with_fetchall("god")
+    print(names_list_from_db[0])

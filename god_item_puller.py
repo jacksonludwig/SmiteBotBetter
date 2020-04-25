@@ -3,11 +3,11 @@ import urllib.request
 from selenium import webdriver
 import time
 import db_connector
+import re
 
 GODS_URL = "https://www.smitegame.com/gods/"
 ITEMS_URL = "https://www.smitefire.com/smite/items"
 BASE_BUILD_URL = "https://smite.gg/stats/703/conquest/all/"
-ITEM_SECTION_CLASSES = "sc-fzoaKM hNuJKS"
 
 
 def fake_browser(URL):
@@ -24,8 +24,12 @@ def get_soup(URL):
 
 
 def fake_browser_selenium(URL):
-    driver = webdriver.Firefox(executable_path=r"geckodriver.exe")
-    driver.maximize_window()
+    adblock_file = "C:\\Users\\Jackson\\AppData\\Roaming\\Mozilla\\Firefox\\Profiles\\0uicy69o.selenium_prof\\extensions\\uBlock0@raymondhill.net.xpi"
+    profile = webdriver.FirefoxProfile(
+        "C:\\Users\\Jackson\\AppData\\Roaming\\Mozilla\\Firefox\\Profiles\\0uicy69o.selenium_prof")
+    driver = webdriver.Firefox(
+        executable_path=r"geckodriver.exe", firefox_profile=profile)
+    driver.install_addon(adblock_file, temporary=True)
     driver.get(URL)
     time.sleep(10)
     return driver.page_source.encode("utf-8").strip()
@@ -69,22 +73,19 @@ def get_item_info():
     write_names_to_text("items.txt", item_names)
 
 
-# This will have to go through children of the correct flex class
+# This will have to go through siblings of the correct flex class
 # Needs finishing
 def get_core_build(names):
     for name in names:
-        soup = get_soup(BASE_BUILD_URL + name)
-        print(soup.find_all('div'))
-        for item in soup.findAll("div", {"class": ITEM_SECTION_CLASSES}):
-            print(item)
-            print("------")
+        search_name = name.lower()
+        soup = get_soup_selenium(BASE_BUILD_URL + search_name)
+        print(BASE_BUILD_URL + search_name)
         break
 
 
 def main():
    # get_item_info()
    # get_god_info()
-
     list_of_names_from_db = db_connector.query_with_fetchall("god")
     get_core_build(list_of_names_from_db)
 

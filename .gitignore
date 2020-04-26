@@ -137,3 +137,5 @@ project_env/token.json
 chromedriver.exe
 
 geckodriver.exe
+
+config.ini

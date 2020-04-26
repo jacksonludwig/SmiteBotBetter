@@ -2,6 +2,9 @@ from mysql.connector import MySQLConnection, Error
 from mysql_dbconfig import read_db_config
 import utils
 
+CATEGORIES = ["god_has_item_in_core",
+              "god_has_item_in_offensive", "god_has_item_in_defensive"]
+
 
 def connect():
     """ Test connect to MySQL database """
@@ -99,6 +102,31 @@ def insert_items(names):
         cursor = conn.cursor()
         query = "INSERT INTO item(item_name) VALUE(%s)"
         cursor.executemany(query, names)
+
+        if cursor.lastrowid:
+            print('last insert id', cursor.lastrowid)
+        else:
+            print('last insert id not found')
+
+        conn.commit()
+    except Error as error:
+        print(error)
+
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def insert_into_build(name, category, item):
+    query = f"INSERT INTO {CATEGORIES[category]}(god_id, item_id) VALUES({name}, {item})"
+    #args = (name, item)
+
+    try:
+        db_config = read_db_config()
+        conn = MySQLConnection(**db_config)
+
+        cursor = conn.cursor()
+        cursor.execute(query)
 
         if cursor.lastrowid:
             print('last insert id', cursor.lastrowid)

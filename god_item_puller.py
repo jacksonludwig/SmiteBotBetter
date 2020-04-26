@@ -35,7 +35,9 @@ def fake_browser_selenium(URL):
     driver.install_addon(adblock_file, temporary=True)
     driver.get(URL)
     time.sleep(5)
-    return driver.page_source.encode("utf-8").strip()
+    data = driver.page_source.encode("utf-8").strip()
+    driver.quit()
+    return data
 
 
 def get_soup_selenium(URL):
@@ -116,41 +118,30 @@ def get_build(name):
     return [core_build, offensive_build, defensive_build]
 
 
+def insert_to_db(list_of_builds, item_dict, name_dict, name, category):
+    for item in list_of_builds[category]:
+        i = item_dict.get(item)
+        if i is not None:
+            n = name_dict.get(name)
+            db_connector.insert_into_build(n, category, i)
+            print(i)
+
+
+def insert_all_to_db(list_of_names_from_db, item_dict, name_dict):
+    for name in list_of_names_from_db:
+        list_of_builds = get_build(name)
+        for i in range(3):
+            insert_to_db(list_of_builds, item_dict, name_dict, name, i)
+
+
 def main():
     list_of_names_from_db = db_connector.query_with_fetchall("god")
     list_of_items_from_db = db_connector.query_with_fetchall("item")
-
     name_dict = utils.create_dictionary_from_list(list_of_names_from_db)
     item_dict = utils.create_dictionary_from_list(list_of_items_from_db)
-
     utils.replaces_spaces_with_dash(list_of_names_from_db)
 
-    # must remember not to add NONE
-    for name in list_of_names_from_db:
-        list_of_builds = get_build(name)
-
-        for item in list_of_builds[0]:
-            i = item_dict.get(item)
-            if i is not None:
-                print(i)
-
-        for item in list_of_builds[1]:
-            i = item_dict.get(item)
-            if i is not None:
-                print(i)
-
-        for item in list_of_builds[2]:
-            i = item_dict.get(item)
-            if i is not None:
-                print(i)
-
-        # one char for now
-        break
+    insert_all_to_db(list_of_names_from_db, item_dict, name_dict)
 
 
 main()
-
-# REVERSE DICT!!
-# get list of items for build
-# find keys for corresponding items (and gods) by searching through dictionary
-# add to db with given keys

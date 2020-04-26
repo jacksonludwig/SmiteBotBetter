@@ -30,6 +30,7 @@ def fake_browser_selenium(URL):
     adblock_file = "C:\\Users\\Jackson\\AppData\\Roaming\\Mozilla\\Firefox\\Profiles\\0uicy69o.selenium_prof\\extensions\\uBlock0@raymondhill.net.xpi"
     profile = webdriver.FirefoxProfile(
         "C:\\Users\\Jackson\\AppData\\Roaming\\Mozilla\\Firefox\\Profiles\\0uicy69o.selenium_prof")
+    profile.set_preference("browser.privatebrowsing.autostart", True)
     driver = webdriver.Firefox(
         executable_path=r"geckodriver.exe", firefox_profile=profile)
     driver.install_addon(adblock_file, temporary=True)
@@ -122,13 +123,15 @@ def insert_to_db(list_of_builds, item_dict, name_dict, name, category):
     for item in list_of_builds[category]:
         i = item_dict.get(item)
         if i is not None:
-            n = name_dict.get(name)
+            n = name_dict.get(utils.replace_dashes_with_spaces(name))
             db_connector.insert_into_build(n, category, i)
             print(i)
 
 
 def insert_all_to_db(list_of_names_from_db, item_dict, name_dict):
     for name in list_of_names_from_db:
+        if name == "Baba-Yaga":
+            continue
         list_of_builds = get_build(name)
         for i in range(3):
             insert_to_db(list_of_builds, item_dict, name_dict, name, i)
@@ -139,7 +142,7 @@ def main():
     list_of_items_from_db = db_connector.query_with_fetchall("item")
     name_dict = utils.create_dictionary_from_list(list_of_names_from_db)
     item_dict = utils.create_dictionary_from_list(list_of_items_from_db)
-    utils.replaces_spaces_with_dash(list_of_names_from_db)
+    utils.replace_spaces_with_dashes(list_of_names_from_db)
 
     insert_all_to_db(list_of_names_from_db, item_dict, name_dict)
 

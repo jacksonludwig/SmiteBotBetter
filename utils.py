@@ -22,9 +22,13 @@ def make_singleton_tuples(names):
         names[i] = (names[i],)
 
 
-def replaces_spaces_with_dash(names):
+def replace_spaces_with_dashes(names):
     for i in range(len(names)):
         names[i] = names[i].replace(" ", "-")
+
+
+def replace_dashes_with_spaces(name):
+    return name.replace("-", " ")
 
 
 def create_dictionary_from_list(names):

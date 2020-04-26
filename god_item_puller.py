@@ -4,10 +4,13 @@ from selenium import webdriver
 import time
 import db_connector
 import re
+import utils
 
 GODS_URL = "https://www.smitegame.com/gods/"
 ITEMS_URL = "https://www.smitefire.com/smite/items"
 BASE_BUILD_URL = "https://smite.gg/stats/703/conquest/all/"
+
+CATEGORIES = ["Core", "Offensive", "Defensive"]
 
 
 def fake_browser(URL):
@@ -73,27 +76,24 @@ def get_item_info():
     write_names_to_text("items.txt", item_names)
 
 
-# This will have to go through siblings of the correct flex class
-# Needs finishing
-def get_core_build(names, category):
-    for name in names:
-        search_name = name.lower()
-        print(f"Fetching from: {BASE_BUILD_URL}{search_name}")
-        soup = get_soup_selenium(BASE_BUILD_URL + search_name)
-        core_div = soup.find("div", string=category)
-        for sibling in core_div.next_siblings:
-            data = sibling.find("div", title=True)
-            print(data.text)
-        # only one god for now
-        break
+def get_build(name, category):
+    search_name = name.lower()
+    print(f"Fetching from: {BASE_BUILD_URL}{search_name}")
+    soup = get_soup_selenium(BASE_BUILD_URL + search_name)
+    core_div = soup.find("div", string=category)
+    for sibling in core_div.next_siblings:
+        data = sibling.find("div", title=True)
+        print(data.text)
 
 
 def main():
-   # get_item_info()
-   # get_god_info()
     list_of_names_from_db = db_connector.query_with_fetchall("god")
-    categories = ["Core", "Offensive", "Defensive"]
-    get_core_build(list_of_names_from_db, categories[2])
+    list_of_items_from_db = db_connector.query_with_fetchall("item")
+    name_dict = utils.create_dictionary_from_list(list_of_names_from_db)
+    item_dict = utils.create_dictionary_from_list(list_of_items_from_db)
+
+    utils.replaces_spaces_with_dash(list_of_names_from_db)
+    get_build(list_of_names_from_db[70], CATEGORIES[2])
 
 
 main()

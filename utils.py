@@ -20,3 +20,17 @@ def read_names(file_name):
 def make_singleton_tuples(names):
     for i in range(len(names)):
         names[i] = (names[i],)
+
+
+def replaces_spaces_with_dash(names):
+    for i in range(len(names)):
+        names[i] = names[i].replace(" ", "-")
+
+
+def create_dictionary_from_list(names):
+    name_dict = {}
+    count = 1
+    for name in names:
+        name_dict.update({count: name})
+        count = count + 1
+    return name_dict

@@ -76,24 +76,81 @@ def get_item_info():
     write_names_to_text("items.txt", item_names)
 
 
-def get_build(name, category):
+def get_core(soup):
+    build = []
+    core_div = soup.find("div", string=CATEGORIES[0])
+    for sibling in core_div.next_siblings:
+        data = sibling.find("div", title=True)
+        build.append(data.text)
+    return build
+
+
+def get_offensive(soup):
+    build = []
+    core_div = soup.find("div", string=CATEGORIES[1])
+    for sibling in core_div.next_siblings:
+        data = sibling.find("div", title=True)
+        build.append(data.text)
+    return build
+
+
+def get_defensive(soup):
+    build = []
+    core_div = soup.find("div", string=CATEGORIES[2])
+    for sibling in core_div.next_siblings:
+        data = sibling.find("div", title=True)
+        build.append(data.text)
+    return build
+
+
+def get_build(name):
     search_name = name.lower()
     print(f"Fetching from: {BASE_BUILD_URL}{search_name}")
     soup = get_soup_selenium(BASE_BUILD_URL + search_name)
-    core_div = soup.find("div", string=category)
-    for sibling in core_div.next_siblings:
-        data = sibling.find("div", title=True)
-        print(data.text)
+    core_build = get_core(soup)
+    offensive_build = get_offensive(soup)
+    defensive_build = get_defensive(soup)
+    print(core_build)
+    print(offensive_build)
+    print(defensive_build)
+    return [core_build, offensive_build, defensive_build]
 
 
 def main():
     list_of_names_from_db = db_connector.query_with_fetchall("god")
     list_of_items_from_db = db_connector.query_with_fetchall("item")
+
     name_dict = utils.create_dictionary_from_list(list_of_names_from_db)
     item_dict = utils.create_dictionary_from_list(list_of_items_from_db)
 
     utils.replaces_spaces_with_dash(list_of_names_from_db)
-    get_build(list_of_names_from_db[70], CATEGORIES[2])
+
+    # must remember not to add NONE
+    for name in list_of_names_from_db:
+        list_of_builds = get_build(name)
+
+        for item in list_of_builds[0]:
+            i = item_dict.get(item)
+            if i is not None:
+                print(i)
+
+        for item in list_of_builds[1]:
+            i = item_dict.get(item)
+            if i is not None:
+                print(i)
+
+        for item in list_of_builds[2]:
+            i = item_dict.get(item)
+            if i is not None:
+                print(i)
+
+        # one char for now
+        break
 
 
 main()
+
+# REVERSE DICT!!
+# get list of items for build
+# find keys for corresponding items (and gods) by searching through dictionary
+# add to db with given keys

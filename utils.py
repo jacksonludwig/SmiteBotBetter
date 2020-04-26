@@ -31,6 +31,6 @@ def create_dictionary_from_list(names):
     name_dict = {}
     count = 1
     for name in names:
-        name_dict.update({count: name})
+        name_dict.update({name: count})
         count = count + 1
     return name_dict

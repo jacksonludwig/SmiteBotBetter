@@ -148,15 +148,21 @@ def insert_all_to_db(list_of_names_from_db, item_dict, name_dict):
             insert_to_db(list_of_builds, item_dict, name_dict, name, i)
 
 
-def main():
+def get_dictionary_for_bot():
     list_of_names_from_db = db_connector.query_with_fetchall("god")
-    name_dict = utils.create_dictionary_from_list(list_of_names_from_db)
+    return utils.create_dictionary_from_list(list_of_names_from_db)
+
+
+def main():
+    #list_of_names_from_db = db_connector.query_with_fetchall("god")
+    #name_dict = utils.create_dictionary_from_list(list_of_names_from_db)
     #list_of_items_from_db = db_connector.query_with_fetchall("item")
     #item_dict = utils.create_dictionary_from_list(list_of_items_from_db)
     # utils.replace_spaces_with_dashes(list_of_names_from_db)
     #insert_all_to_db(list_of_names_from_db, item_dict, name_dict)
 
-    print(db_connector.query_build_by_name(name_dict, "Zeus"))
+    # print(db_connector.query_build_by_name(name_dict, "Zeus"))
+    pass
 
 
 main()

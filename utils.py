@@ -27,6 +27,10 @@ def replace_spaces_with_dashes(names):
         names[i] = names[i].replace(" ", "-")
 
 
+def replace_space_with_dash(name):
+    return name.replace(" ", "-")
+
+
 def replace_dashes_with_spaces(name):
     return name.replace("-", " ")
 
@@ -49,3 +53,10 @@ def find_id_by_name(name_dict, name):
     for god_name, ident in name_dict.items():
         if god_name.strip().lower() == name:
             return ident
+
+
+def organize_build_for_embed(items):
+    build_string = ""
+    for item in items:
+        build_string = build_string + item + "\n"
+    return build_string

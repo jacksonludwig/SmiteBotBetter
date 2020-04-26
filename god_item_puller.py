@@ -108,14 +108,15 @@ def get_defensive(soup):
 
 def get_build(name):
     search_name = name.lower()
+    search_name = utils.remove_non_letters(search_name)
+    print(f"God name: {name}")
     print(f"Fetching from: {BASE_BUILD_URL}{search_name}")
     soup = get_soup_selenium(BASE_BUILD_URL + search_name)
     core_build = get_core(soup)
     offensive_build = get_offensive(soup)
     defensive_build = get_defensive(soup)
-    print(core_build)
-    print(offensive_build)
-    print(defensive_build)
+    print(
+        f"Build received: {len(core_build) + len(offensive_build) + len(defensive_build)} items")
     return [core_build, offensive_build, defensive_build]
 
 
@@ -126,6 +127,16 @@ def insert_to_db(list_of_builds, item_dict, name_dict, name, category):
             n = name_dict.get(utils.replace_dashes_with_spaces(name))
             db_connector.insert_into_build(n, category, i)
             print(i)
+
+
+def insert_all_to_db_in_range(list_of_names_from_db, item_dict, name_dict, start, end):
+    for i in range(start, end):
+        if list_of_names_from_db[i] == "Baba-Yaga":
+            continue
+        list_of_builds = get_build(list_of_names_from_db[i])
+        for j in range(3):
+            insert_to_db(list_of_builds, item_dict, name_dict,
+                         list_of_names_from_db[i], j)
 
 
 def insert_all_to_db(list_of_names_from_db, item_dict, name_dict):

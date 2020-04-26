@@ -31,6 +31,10 @@ def replace_dashes_with_spaces(name):
     return name.replace("-", " ")
 
 
+def remove_non_letters(name):
+    return ''.join([char for char in name if char.isalpha() or char == " " or char == "-"])
+
+
 def create_dictionary_from_list(names):
     name_dict = {}
     count = 1

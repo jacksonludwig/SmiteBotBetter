@@ -150,12 +150,13 @@ def insert_all_to_db(list_of_names_from_db, item_dict, name_dict):
 
 def main():
     list_of_names_from_db = db_connector.query_with_fetchall("god")
-    list_of_items_from_db = db_connector.query_with_fetchall("item")
     name_dict = utils.create_dictionary_from_list(list_of_names_from_db)
-    item_dict = utils.create_dictionary_from_list(list_of_items_from_db)
-    utils.replace_spaces_with_dashes(list_of_names_from_db)
+    #list_of_items_from_db = db_connector.query_with_fetchall("item")
+    #item_dict = utils.create_dictionary_from_list(list_of_items_from_db)
+    # utils.replace_spaces_with_dashes(list_of_names_from_db)
+    #insert_all_to_db(list_of_names_from_db, item_dict, name_dict)
 
-    insert_all_to_db(list_of_names_from_db, item_dict, name_dict)
+    print(db_connector.query_build_by_name(name_dict, "Zeus"))
 
 
 main()

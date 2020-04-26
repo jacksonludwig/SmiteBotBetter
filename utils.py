@@ -42,3 +42,10 @@ def create_dictionary_from_list(names):
         name_dict.update({name: count})
         count = count + 1
     return name_dict
+
+
+def find_id_by_name(name_dict, name):
+    name = name.strip().lower()
+    for god_name, ident in name_dict.items():
+        if god_name.strip().lower() == name:
+            return ident

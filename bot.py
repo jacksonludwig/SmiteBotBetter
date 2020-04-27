@@ -17,6 +17,7 @@ async def on_ready():
 
 @client.command()
 async def build(context, god_name):
+    await context.send("querying...")
     name = utils.replace_dashes_with_spaces(god_name)
     try:
         build = db_connector.query_build_by_name(god_dict, name)

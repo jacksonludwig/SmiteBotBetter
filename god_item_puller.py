@@ -1,14 +1,16 @@
-from bs4 import BeautifulSoup
-import urllib.request
-from selenium import webdriver
-import time
-import db_connector
 import re
+import time
+import urllib.request
+
+from bs4 import BeautifulSoup
+from selenium import webdriver
+
+import db_connector
 import utils
 
 GODS_URL = "https://www.smitegame.com/gods/"
 ITEMS_URL = "https://www.smitefire.com/smite/items"
-BASE_BUILD_URL = "https://smite.gg/stats/703/conquest/all/"
+BASE_BUILD_URL = "https://smite.gg/stats/704/conquest/all/"
 
 CATEGORIES = ["Core", "Offensive", "Defensive"]
 
@@ -35,7 +37,7 @@ def fake_browser_selenium(URL):
         executable_path=r"geckodriver.exe", firefox_profile=profile)
     driver.install_addon(adblock_file, temporary=True)
     driver.get(URL)
-    time.sleep(5)
+    time.sleep(7)
     data = driver.page_source.encode("utf-8").strip()
     driver.quit()
     return data
@@ -131,8 +133,6 @@ def insert_to_db(list_of_builds, item_dict, name_dict, name, category):
 
 def insert_all_to_db_in_range(list_of_names_from_db, item_dict, name_dict, start, end):
     for i in range(start, end):
-        if list_of_names_from_db[i] == "Baba-Yaga":
-            continue
         list_of_builds = get_build(list_of_names_from_db[i])
         for j in range(3):
             insert_to_db(list_of_builds, item_dict, name_dict,
@@ -141,8 +141,6 @@ def insert_all_to_db_in_range(list_of_names_from_db, item_dict, name_dict, start
 
 def insert_all_to_db(list_of_names_from_db, item_dict, name_dict):
     for name in list_of_names_from_db:
-        if name == "Baba-Yaga":
-            continue
         list_of_builds = get_build(name)
         for i in range(3):
             insert_to_db(list_of_builds, item_dict, name_dict, name, i)
@@ -154,15 +152,16 @@ def get_dictionary_for_bot():
 
 
 def main():
-    #list_of_names_from_db = db_connector.query_with_fetchall("god")
-    #name_dict = utils.create_dictionary_from_list(list_of_names_from_db)
-    #list_of_items_from_db = db_connector.query_with_fetchall("item")
-    #item_dict = utils.create_dictionary_from_list(list_of_items_from_db)
-    # utils.replace_spaces_with_dashes(list_of_names_from_db)
+    list_of_names_from_db = db_connector.query_with_fetchall("god")
+    name_dict = utils.create_dictionary_from_list(list_of_names_from_db)
+    list_of_items_from_db = db_connector.query_with_fetchall("item")
+    item_dict = utils.create_dictionary_from_list(list_of_items_from_db)
+    utils.replace_spaces_with_dashes(list_of_names_from_db)
     #insert_all_to_db(list_of_names_from_db, item_dict, name_dict)
+    insert_all_to_db_in_range(
+        list_of_names_from_db, item_dict, name_dict, 17, len(list_of_names_from_db))
 
     # print(db_connector.query_build_by_name(name_dict, "Zeus"))
-    pass
 
 
 main()
